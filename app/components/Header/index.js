@@ -8,23 +8,52 @@ import HeaderLink from './HeaderLink';
 import Banner from './banner.jpg';
 import messages from './messages';
 
+
 const HeaderWrapper = styled.div`
   color: white;
   background-color: #ff4500;
-  padding-left: 15px;
+  padding-top: 0px;
+`;
+
+const PageWrapper = styled.div`
+  max-width: calc(1140px + 16px * 2);
+  margin: 0 auto;
+  padding: 0 16px;
+  text-align:center;
+`;
+
+const Left = styled.div`
+  float:left;width:200px;
+  overflow:hidden;
+`;
+const Right = styled.div`
+  float:right;
+  width:200px;
+`;
+const Center = styled.div`
+  padding-top:0px;
+  margin:0 auto;
+  width:400px;
+  font-size: 1.15em;
 `;
 
 const H1 = styled.h1`
-  float:left;
-  width:400px;
-  margin:10px;
-  padding:0px;
+  width:200px;
+  padding-top:4px;
+  margin:0px;
   font-size: 1.45em;
+`;
+
+const H2 = styled.h2`
+  font-style:italic;
+  margin:0px;
+  padding:10px;
+  font-size: 1em;
 `;
 
 const ButtonCreate = styled(Link)`
   float:right;
-  width: 160px;
+  width: 180px;
   display: inline-block;
   box-sizing: border-box;
   padding: 0.25em 1em;
@@ -37,7 +66,7 @@ const ButtonCreate = styled(Link)`
   outline: 0;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
   border: 2px solid white;
   color: white;
   margin: 5px;
@@ -45,13 +74,6 @@ const ButtonCreate = styled(Link)`
     background: white ;
     color: #ff4500;
   }
-
-`;
-const PageWrapper = styled.div`
-  max-width: calc(1140px + 16px * 2);
-  margin: 0 auto;
-  padding: 0 16px;
-  flex-direction: column;
 `;
 
 const A = styled(Link)`
@@ -69,19 +91,38 @@ const A = styled(Link)`
             <FormattedMessage {...messages.admin} />
           </HeaderLink>
           */
+          /*
+          <PageWrapper>
+          <ButtonCreate to="/ads/create">
+            <FormattedMessage {...messages.create} />
+          </ButtonCreate>
+          <I>The place to find your travel budy</I>
+          <H1>
+            <A to="/">
+              www.triphub.cz
+            </A>
+          </H1>
+        </PageWrapper>*/
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <HeaderWrapper>
         <PageWrapper>
-          <ButtonCreate to="/ads/create">
-            <FormattedMessage {...messages.create} />
-          </ButtonCreate>
-          <H1>
-            <A to="/">
-              www.triphub.eu
-            </A>
-          </H1>
+          <Left>
+            <H1>
+              <A to="/">
+                www.triphub.cz
+              </A>
+            </H1>
+          </Left>
+          <Right>
+            <ButtonCreate to="/ads/create">
+              <FormattedMessage {...messages.create} />
+            </ButtonCreate>
+          </Right>
+          <Center>
+            <H2>„The place to find your travel budy”</H2>
+          </Center>
         </PageWrapper>
       </HeaderWrapper>
     );

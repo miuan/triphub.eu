@@ -18,6 +18,9 @@ import DatePicker from 'material-ui/DatePicker';
 import Button from '../components/Button'
 import PlaceItem from './components/PlaceItem'
 import AdsListCart from './../AdsListPage/AdsListCard.container'
+import Snackbar from 'material-ui/Snackbar';
+
+import { Route } from 'react-router-dom'
 
 import { 
   placesLoaded, 
@@ -107,7 +110,12 @@ class AdsEditor extends React.Component{
     avatarUrl: null,
     avatarName: null,
     places: [],
-    ERROR: {}
+    // handle error messages
+    ERROR: {},
+    // snack bar
+    open: false,
+    message: '',
+    action: ''
   }
   
   //console.log('AdsEditor', props, props.places);
@@ -167,6 +175,11 @@ class AdsEditor extends React.Component{
   onChangeAvatarName = (ops, data) => {
     console.log('onChangeAvatarName', ops, data)
     this.setState({avatarName: data});
+  };
+
+  handleRequestClose = () => {
+    console.log('handleRequestClose')
+    this.setState({open: false, action:''});
   };
 
   adsFromAds(Ads){
@@ -282,7 +295,10 @@ class AdsEditor extends React.Component{
 
     if(hasError){
       console.log(error);
-      this.setState({ERROR: error});
+      this.setState({ERROR: error,
+        open: true,
+        message: 'Save Error: ' + (error.title || error.text || error.detailUrl)
+      });
       return;
     }
 
@@ -294,7 +310,13 @@ class AdsEditor extends React.Component{
       const ads = this.adsFromAds(this.state)
       //ads.date = new Date(ads.date.getFullYear(), ads.date.getMonth(), ads.date.getDate());
       // ads.date = `${ads.date.getFullYear()}-${ads.date.getUTCMonth()}-${ads.date.getDate()}`;
-      updateAds({variables:ads});
+      updateAds({variables:ads}).then(()=>{
+        this.setState({
+          open: true, 
+          message: 'Your trip is updated! :-)',
+          action:'home'
+        });
+      });
     } else {
       const mappedPlaces = places.map(o => {
         return {
@@ -306,7 +328,13 @@ class AdsEditor extends React.Component{
     
       ads.places = mappedPlaces;
       //ads.date = `${ads.date.getFullYear()}-${ads.date.getMonth()}-${ads.date.getDate()}`;
-      createAds({variables:ads})
+      createAds({variables:ads}).then(()=>{
+        this.setState({
+          open: true, 
+          message: 'Your trip is created! :-)',
+          action:'home'
+        });
+      });
       this.setState({edit: true});
     }
     
@@ -436,6 +464,16 @@ class AdsEditor extends React.Component{
             <AdsListCart ads={this.state} onSave={this.onCreateAds} onSaveName="Save Or Update"/>
           </div>
       </div>
+      <Route render={({ history}) => (
+        <Snackbar
+          open={this.state.open}
+          message={this.state.message}
+          action={this.state.action}
+          autoHideDuration={3000}
+          onActionClick={()=>{history.push('/')}}
+          onRequestClose={this.handleRequestClose}
+        />
+      )} />
       
       </div>
     );

@@ -15,11 +15,19 @@ import TextField from 'material-ui/TextField';
 
 import Button from '../components/Button'
 import AdsList from './AdsList.container';
-
+import {orange500, blue500} from 'material-ui/styles/colors';
 const textSearchStyle = {
   //'lineHeight' : 30,
   //height: 30,
   marginTop: -20
+}
+
+const styles = {
+  underlineStyle: {
+    borderColor: '#ff4500',
+  },floatingLabelStyle: {
+    color: '#ff4500',
+  },
 }
 
 class Ads extends React.Component{
@@ -80,7 +88,9 @@ class Ads extends React.Component{
           <SelectField
             floatingLabelText="Month you wanna travel"
             value={this.state.searchMonth}
-            onChange={this.onChangeSearchMonth} >
+            onChange={this.onChangeSearchMonth}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineFocusStyle={styles.underlineStyle} >
             <MenuItem value={0} primaryText="Doesn't matter" />
             <MenuItem value={1} primaryText="January" />
             <MenuItem value={2} primaryText="February" />
@@ -98,7 +108,9 @@ class Ads extends React.Component{
           <SelectField
             floatingLabelText="How much time you have"
             value={this.state.searchDuration}
-            onChange={this.onChangeSearchDuration}>
+            onChange={this.onChangeSearchDuration}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineFocusStyle={styles.underlineStyle}>
               <MenuItem value={0} primaryText="Doesn't matter" />
               <MenuItem value={1} primaryText="One Afternoon" />
               <MenuItem value={2} primaryText="One day" />
@@ -114,7 +126,9 @@ class Ads extends React.Component{
           <SelectField
             floatingLabelText="My maximum budged"
             value={this.state.searchBudget}
-            onChange={this.onChangeSearchBudget}>
+            onChange={this.onChangeSearchBudget}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineFocusStyle={styles.underlineStyle}>
               <MenuItem value={0} primaryText="Doesn't matter" />
               <MenuItem value={1000} primaryText="less than 1000CZK" />
               <MenuItem value={2500} primaryText="less than 2500CZK" />
@@ -123,18 +137,22 @@ class Ads extends React.Component{
               <MenuItem value={15000} primaryText="less than 15000CZK" />
               <MenuItem value={20000} primaryText="less than 20000CZK" />
               <MenuItem value={25000} primaryText="less than 25000CZK" />
+            
           </SelectField>
 
           <TextField
             style={textSearchStyle}
             fullWidth={true}
-            hintText="Prague, San Diego, Usuaya, ..."
+            hintText="Paris, Barcelona, Berlin, ..."
             floatingLabelText={'search trip by places you want to visit'}
             value={this.state.searchText}
             onChange={this.onChangeSeachText}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineFocusStyle={styles.underlineStyle}
           />
           
           <AdsList 
+            showEditButton={this.props.showEditButton}
             searchText={this.state.searchTextDO}
             searchMonth={this.state.searchMonth}  
             searchDuration={this.state.searchDuration}

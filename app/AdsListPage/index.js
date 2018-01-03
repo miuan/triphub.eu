@@ -6,15 +6,14 @@ import Ads from './Ads.container'
 
 function AdsEditorPage(props) {
   // const { match: { params : { id }}} = props;
-  //const id = null;
+  // const id = null;
 
-
+  console.log('AdsEditorPage', props)
   return (
     <div>
-      <Ads  />
+      <Ads showEditButton={props.showEditButton}/>
     </div>
   );
 }
-
 
 export default compose()(AdsEditorPage);

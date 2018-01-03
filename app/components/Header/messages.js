@@ -19,7 +19,7 @@ export default defineMessages({
     defaultMessage: 'Admin',
   },create: {
     id: 'boilerplate.components.Header.create',
-    defaultMessage: 'Create Trip',
+    defaultMessage: 'CREATE TRIP',
   },
 
 });

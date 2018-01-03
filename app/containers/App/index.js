@@ -70,7 +70,7 @@ export default function App() {
           <Route exact path="/admin/countries" component={CountryListPage} />
           <Route exact path="/ads/create" component={AdsCreatePage} />
           <Route exact path="/ads/edit/:id" component={AdsCreatePage} />
-          <Route exact path="/ads" component={AdsListPage} />
+          <Route exact path="/ads/editor" render={routeProps => <AdsListPage {...routeProps} showEditButton={true}/>} />
           <Route path="" component={NotFoundPage} />
         </Switch>
         </PageWrapper>

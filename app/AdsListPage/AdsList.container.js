@@ -20,6 +20,26 @@ import FlatButton from 'material-ui/FlatButton';
 import AdsListCard from './AdsListCard.container';
 import AdsListEmpty from './AdsListEmpty.container';
 
+import CircularProgress from 'material-ui/CircularProgress';
+
+
+import styled from 'styled-components';
+
+const LoadingWrapper = styled.div`
+  width:100%;
+  margin:70px;
+  margin-left:300px;
+  margin-bottom:500px;
+`;
+
+const LoadingText = styled.span`
+  margin-left:-100px;
+`;
+
+const LoadingBody = styled.div`
+  display: table;
+`
+
 class AdsList extends React.Component{
   state = {
 
@@ -144,10 +164,16 @@ class AdsList extends React.Component{
   render() {
     const { data: { allAdses, loading }} = this.props;
 
+    // const loading = true;
     return (
         
         <div> 
-          {loading ? <div>Loading</div> : allAdses.length < 1 ? <AdsListEmpty /> : allAdses.map(ads => (<AdsListCard ads={ads} showEditButton={false}/>))}
+          {loading ? <LoadingWrapper>
+            <LoadingBody>
+              <CircularProgress size={150} thickness={10} >  </CircularProgress>
+              <LoadingText>Loading... </LoadingText>
+            </LoadingBody>
+          </LoadingWrapper> : allAdses.length < 1 ? <AdsListEmpty /> : allAdses.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
         </div>
     )
   }
@@ -156,7 +182,7 @@ class AdsList extends React.Component{
 export default composeApollo(
   graphql(gql`
     query allAdses($searchFilter: AdsFilter) {
-        allAdses(filter: $searchFilter) {
+        allAdses(filter: $searchFilter, orderBy:date_ASC) {
             id
             title,
             text,
