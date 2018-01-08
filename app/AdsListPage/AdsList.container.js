@@ -40,6 +40,22 @@ const LoadingBody = styled.div`
   display: table;
 `
 
+const Column = styled.div`
+  float: left;
+  width: 33.33%;  
+  @media(max-width:1070px){
+    width: 100%;
+  }
+`
+
+const Column3 = styled.div`
+  float: left;
+  width: 33.33%;  
+  @media(max-width:1120px){
+    width: 100%;
+  }
+`
+
 class AdsList extends React.Component{
   state = {
 
@@ -164,6 +180,44 @@ class AdsList extends React.Component{
   render() {
     const { data: { allAdses, loading }} = this.props;
 
+    let column1 = [];
+    let len1 = 0;
+
+    let column2 = [];
+    let len2 = 0;
+
+    let column3 = [];
+    let len3 = 0;
+
+    let col = [
+      {
+        col: [],
+        len : 0
+      },{
+        col: [],
+        len : 0
+      },{
+        col: [],
+        len : 0
+      }
+    ]
+
+    if(allAdses && allAdses.length > 0){
+
+      let colIndex = 0;
+      let colPrev = 2;
+      allAdses.forEach((ads) => {
+        col[colIndex].col.push(ads)
+
+        if(colIndex == 2) {
+          colIndex = 0;
+        } else {
+          colIndex += 1;
+        }
+      });
+    }
+    
+
     // const loading = true;
     return (
         
@@ -173,7 +227,20 @@ class AdsList extends React.Component{
               <CircularProgress size={150} thickness={10} >  </CircularProgress>
               <LoadingText>Loading... </LoadingText>
             </LoadingBody>
-          </LoadingWrapper> : allAdses.length < 1 ? <AdsListEmpty /> : allAdses.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+          </LoadingWrapper> : allAdses.length < 1 ? <AdsListEmpty /> 
+            : 
+            <div>
+              <Column>
+                {col[0].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+              </Column>
+              <Column>
+                {col[1].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+              </Column>
+              <Column3>
+                {col[2].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+              </Column3>
+            </div>
+          }
         </div>
     )
   }

@@ -23,10 +23,9 @@ import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
 
 const style = {
-  width: 350,
+  width: 330,
   margin: 10,
-  textAlign: 'center',
-  display: 'inline-block',
+  textAlign: 'left',
 };
 
 const styleChip = {
@@ -36,6 +35,9 @@ const styleChip = {
 const styleWrapper = {
   display: 'flex',
   flexWrap: 'wrap',
+  marginLeft: 10,
+  marginRight: 10,
+  'text-align': 'center'
 }
 
 const listDurations = [
@@ -112,13 +114,14 @@ class AdsListCard extends React.Component{
     const showHeader = ads.avatarName || ads.avatarUrl || ads.avatarImageUrl;
     const avatarName = ads.avatarName ? ads.avatarName : 'Anonymous';
     const avatarImageUrl = ads.avatarImageUrl ? ads.avatarImageUrl : 'http://www.freeiconspng.com/uploads/profile-icon-9.png';
+    const avatarUrl = ads.avatarUrl ? ads.avatarUrl.substr(0, 30) : '';
     return (
-      <Paper style={style} zDepth={1} >
+      <Paper style={style} zDepth={10} >
       <Card id={ads.id}>
         {showHeader ? <a href={ads.avatarUrl} target="blank">
           <CardHeader
           title={avatarName}
-          subtitle={ads.avatarUrl}
+          subtitle={avatarUrl}
           avatar={avatarImageUrl}
           />
         </a>: null }
@@ -130,7 +133,7 @@ class AdsListCard extends React.Component{
         </CardText>
           <div style={styleWrapper}>
           {ads.places.map(place=>(
-            <Chip
+             <Chip
             key={place.id}
             style={styleChip}>
             {place.name}

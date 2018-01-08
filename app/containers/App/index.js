@@ -56,10 +56,10 @@ export default function App() {
     
       <AppWrapper>
         <Helmet
-          titleTemplate="%s - Trip hub - find your friend to travel"
-          defaultTitle="Trip hub - find your friend to travel"
+          titleTemplate="%s - www.triphub.cz - the place to find your travel budy :-)"
+          defaultTitle="www.triphub.cz - the place to find your travel budy :-)"
         >
-          <meta name="description" content="Trip hub - find your friend to travel" />
+          <meta name="description" content="www.triphub.cz - the place to find your travel budy :-)" />
         </Helmet>
         <Header />
         <PageWrapper>

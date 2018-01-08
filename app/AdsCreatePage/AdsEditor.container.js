@@ -28,7 +28,8 @@ import {
   openNewPlaceModal,
   placeAdd,
   placeMove,
-  placeRemove
+  placeRemove,
+  tripsStorageUpdate
 } from './actions';
 
 import {  
@@ -42,6 +43,8 @@ import reducer from './reducer';
 
 import NewPlaceModal from './NewPlaceModal.container'
 import GeoAutocomplete from './GeoAutocomplete.container'
+
+import styled from 'styled-components';
 
 let Loading = props => {
   return (
@@ -79,22 +82,29 @@ const styleContainer = {
 }
 
 const styleItemLeft = {
-  width: '75%',
-  float: 'left',
-  padding: 20,
-}
-
-const styleItemRight = {
+  width: '80%',
   
-  width: '25%',
-  float: 'left',
   padding: 20,
 }
 
-const styleFixed = {
-  position:'fixed',
-  top: '1px'
-}
+
+const ItemRight = styled.div`
+  width: 15%;
+  float: right;
+  padding: 20;
+  @media(max-width:600px){
+    float:none;
+    width: 100%;
+  }
+`;
+
+const Fixed = styled.div`
+  position: fixed;
+  top: 1px;
+  @media(max-width:600px){
+    position:relative;
+  }
+`;
 
 class AdsEditor extends React.Component{
   state = {
@@ -123,7 +133,8 @@ class AdsEditor extends React.Component{
   // const { onAddPlace, onRemovePlace, places } = props;
   
   componentWillMount() {
-    console.log('AdsEditor', this.props, this.props.places);
+    //console.log('AdsEditor', this.props, this.props.places);
+    console.log('AdsEditor', localStorage);
     //this.setState({durationSelect: selectIndex});
   };
 
@@ -267,8 +278,8 @@ class AdsEditor extends React.Component{
 
 
   onCreateAds = () => {
-    const { createAds, updateAds, places } = this.props;
-
+    const { createAds, updateAds, places, onCreateOrUpdateTrip } = this.props;
+    
     let error = {};
     let hasError = false;
 
@@ -310,7 +321,10 @@ class AdsEditor extends React.Component{
       const ads = this.adsFromAds(this.state)
       //ads.date = new Date(ads.date.getFullYear(), ads.date.getMonth(), ads.date.getDate());
       // ads.date = `${ads.date.getFullYear()}-${ads.date.getUTCMonth()}-${ads.date.getDate()}`;
-      updateAds({variables:ads}).then(()=>{
+      updateAds({variables:ads}).then((updated)=>{
+        
+        onCreateOrUpdateTrip(updated.data.updateAds);
+
         this.setState({
           open: true, 
           message: 'Your trip is updated! :-)',
@@ -328,7 +342,9 @@ class AdsEditor extends React.Component{
     
       ads.places = mappedPlaces;
       //ads.date = `${ads.date.getFullYear()}-${ads.date.getMonth()}-${ads.date.getDate()}`;
-      createAds({variables:ads}).then(()=>{
+      createAds({variables:ads}).then((created)=>{
+        onCreateOrUpdateTrip(created.data.createAds);
+
         this.setState({
           open: true, 
           message: 'Your trip is created! :-)',
@@ -339,6 +355,8 @@ class AdsEditor extends React.Component{
     }
     
   }
+
+
 
   render() {
     const { createAds } = this.props;
@@ -457,13 +475,14 @@ class AdsEditor extends React.Component{
             ))}
           </div>
         <GeoAutocomplete onSelect={this.onAddPlace.bind(this)}/>
-        <Button onClick={this.onCreateAds}>{this.state.edit ? `Update` : `Create New`}</Button>
+        
       </div>
-      <div style={styleItemRight}>
-          <div style={styleFixed}>
-            <AdsListCart ads={this.state} onSave={this.onCreateAds} onSaveName="Save Or Update"/>
-          </div>
-      </div>
+      
+      <ItemRight>
+      <Fixed>
+        <AdsListCart ads={this.state} onSave={this.onCreateAds} onSaveName="Save Or Update"/>
+      </Fixed>
+      </ItemRight>
       <Route render={({ history}) => (
         <Snackbar
           open={this.state.open}
@@ -491,8 +510,32 @@ export function mapDispatchToProps(dispatch , props) {
     },onCreateNewPlace : (open) => {
       console.log('onCreateNewPlace', open)
       dispatch(openNewPlaceModal(true))
-    },onChangeTripDuration: (tripDuration) => {
+    }, onCreateOrUpdateTrip: (trip) => {
+      
+      let trips = JSON.parse(localStorage.getItem('created-trips')) || [];
+      
+      console.log('saveLocalStorage', trips);
+  
+      let indexOfTrip = -1;
+      
+      trips.some((t, index)=>{
+        if(trip.id == t.id){
+          indexOfTrip = index;
+          return true;
+        }
+      });
+      
+      if(indexOfTrip != -1){
+        trips.splice(indexOfTrip, 1);
+      }
+  
+      // insert
+      trips.splice(0, 0, trip);
+  
+      let textTrips = JSON.stringify(trips);
+      localStorage.setItem('created-trips', textTrips)
 
+      dispatch(tripsStorageUpdate(trips));
     }, 
   };
 }

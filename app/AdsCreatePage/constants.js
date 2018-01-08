@@ -24,3 +24,5 @@ export const PLACE_MOVE = 'boilerplate/Ads/created/PLACE_MOVE';
 
 export const ADS_CREATE = 'boilerplate/Ads/created/ADS_CREATE';
 export const ADS_UPDATE = 'boilerplate/Ads/created/ADS_UPDATE';
+
+export const TRIPS_STORAGE_UPDATE = 'boilerplate/Ads/created/TRIPS_STORAGE_UPDATE';

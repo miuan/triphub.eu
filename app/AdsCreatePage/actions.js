@@ -26,6 +26,7 @@ import {
   PLACE_ADD,
   PLACE_REMOVE,
   PLACE_MOVE,
+  TRIPS_STORAGE_UPDATE,
 } from './constants';
 
 /**
@@ -103,5 +104,14 @@ export function placeMove(indexFrom, intexTo) {
     type: PLACE_MOVE,
     indexFrom,
     intexTo
+  };
+}
+
+
+
+export function tripsStorageUpdate(storedTrips) {
+  return {
+    type: TRIPS_STORAGE_UPDATE,
+    storedTrips
   };
 }
