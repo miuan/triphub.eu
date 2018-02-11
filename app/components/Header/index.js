@@ -2,11 +2,9 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import Img from './Img';
-import NavBar from './NavBar';
-import HeaderLink from './HeaderLink';
-import Banner from './banner.jpg';
 import messages from './messages';
+
+import { compose as composeApollo, graphql } from 'react-apollo'
 
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -27,6 +25,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { makeSelectTrips } from './selectors';
 import { tripsRecaived } from './actions';
+import verifyUserEmailGL from '../../graphql/verifyUserEmail';
 
 const HeaderWrapper = styled.div`
   color: white;
@@ -144,6 +143,12 @@ const Header = (props) => { // eslint-disable-line react/prefer-stateless-functi
   const trips = props.trips || storedTrips;
   console.log('))))))Header', props.trips);
 
+  if(props.emailToken){
+    props.verifyUserEmail({}).then((data)=>{
+      console.log(data);
+    })
+  }
+
   return (
     <HeaderWrapper>
       <PageWrapper>
@@ -199,8 +204,15 @@ const withConnect = connect(mapStateToProps, mapDispatchToProps);
 const withReducer = injectReducer({ key: 'header', reducer });
 const withSaga = injectSaga({ key: 'header', saga });
 
-export default compose(
+const HeaderContainer = compose(
   withReducer,
   withSaga,
   withConnect,
 )(Header);
+
+
+export default composeApollo(
+  graphql(verifyUserEmailGL, {name: 'verifyUserEmail', skip1: (ownProps) => {
+    return !ownProps.emailToken;
+  }})
+)(HeaderContainer);

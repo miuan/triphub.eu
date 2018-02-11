@@ -1,0 +1,1 @@
+export const TRIPS_RECAIVED = 'boilerplate/Header/TRIPS_RECAIVED';

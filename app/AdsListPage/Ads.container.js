@@ -42,7 +42,7 @@ class Ads extends React.Component{
   timer = null;
 
   componentWillMount() {
-    console.log('AdsList', this.props, this.props.places);
+    console.log('Ads.Container', this.props, this.props.places);
     //this.setState({durationSelect: selectIndex});
   };
 

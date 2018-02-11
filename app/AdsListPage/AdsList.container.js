@@ -62,7 +62,7 @@ class AdsList extends React.Component{
   }
 
   componentWillMount() {
-    console.log('AdsList', this.props, this.props.allAdses);
+    console.log('AdsList', this.props, this.props.allTrips);
     //this.setState({durationSelect: selectIndex});
   };
 
@@ -85,7 +85,7 @@ class AdsList extends React.Component{
   }
 
   updateResultBySearchText(searchText, searchMonth, searchDurtaion, searchBudget){
-    const { data: { allAdses, loading, refetch }} = this.props;
+    const { data: { allTrips, loading, refetch }} = this.props;
 
     let AND = []
 
@@ -178,7 +178,7 @@ class AdsList extends React.Component{
   }
 
   render() {
-    const { data: { allAdses, loading }} = this.props;
+    const { data: { allTrips, loading }} = this.props;
 
     let column1 = [];
     let len1 = 0;
@@ -202,11 +202,11 @@ class AdsList extends React.Component{
       }
     ]
 
-    if(allAdses && allAdses.length > 0){
+    if(allTrips && allTrips.length > 0){
 
       let colIndex = 0;
       let colPrev = 2;
-      allAdses.forEach((ads) => {
+      allTrips.forEach((ads) => {
         col[colIndex].col.push(ads)
 
         if(colIndex == 2) {
@@ -227,7 +227,7 @@ class AdsList extends React.Component{
               <CircularProgress size={150} thickness={10} >  </CircularProgress>
               <LoadingText>Loading... </LoadingText>
             </LoadingBody>
-          </LoadingWrapper> : allAdses.length < 1 ? <AdsListEmpty /> 
+          </LoadingWrapper> : allTrips.length < 1 ? <AdsListEmpty /> 
             : 
             <div>
               <Column>
@@ -248,8 +248,8 @@ class AdsList extends React.Component{
 
 export default composeApollo(
   graphql(gql`
-    query allAdses($searchFilter: AdsFilter) {
-        allAdses(filter: $searchFilter, orderBy:date_ASC) {
+    query allTrips($searchFilter: TripFilter) {
+        allTrips(filter: $searchFilter, orderBy:date_ASC) {
             id
             title,
             text,

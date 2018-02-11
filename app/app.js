@@ -77,7 +77,7 @@ const render = (messages) => {
       <MuiThemeProvider>
         <LanguageProvider messages={messages}>
           <ConnectedRouter history={history}>
-            <App />
+            <App history={history}/>
           </ConnectedRouter>
         </LanguageProvider>
       </MuiThemeProvider>

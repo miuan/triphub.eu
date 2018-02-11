@@ -147,8 +147,8 @@ class AdsListCard extends React.Component{
                 Detail
               </Button>
             </a> : 
-            <A href={`mailto://${ads.detailUrl}`} target="blank">
-              {ads.detailUrl}
+            <A href={`/trip/${ads.id}`}>
+              trip
             </A>  
           }
           { showEditButton ?

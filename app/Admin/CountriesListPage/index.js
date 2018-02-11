@@ -76,7 +76,7 @@ export default compose(
   `),
   graphql(gql`
     mutation createCountry($name:String!) {
-      createCountry(name:$name) {
+       createCountry(name:$name) {
         id
         name
         cities {

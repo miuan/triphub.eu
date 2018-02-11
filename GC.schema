@@ -1,0 +1,60 @@
+# projectId: cjb646u2r08sq0159u7r9hvu6
+# version: 35
+
+type Month @model {
+  id: ID! @isUnique
+  name: String @isUnique
+}
+
+type City @model {
+  id: ID! @isUnique
+  name: String! @isUnique
+  country: Country @relation(name: "CityCountry")
+}
+
+type Country @model {
+  id: ID! @isUnique
+  name: String! @isUnique
+  cities: [City!]! @relation(name: "CityCountry")
+}
+
+type Place @model {
+  id: ID! @isUnique
+  name: String!
+  ads: Ads @relation(name: "AdsOnPlace")
+  country: String!
+}
+
+type Ads @model {
+  id: ID! @isUnique
+  text: String!
+  duration: Int
+  avatarImageUrl: String
+  avatarName: String
+  avatarUrl: String
+  budget: Int
+  date: DateTime
+  detailUrl: String
+  imageUrl: String
+  places: [Place!]! @relation(name: "AdsOnPlace")
+  title: String
+}
+
+type File @model {
+  contentType: String!
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  updatedAt: DateTime!
+  url: String! @isUnique
+}
+
+type User @model {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  updatedAt: DateTime!
+  email: String @isUnique
+  password: String
+}

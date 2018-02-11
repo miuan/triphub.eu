@@ -10,6 +10,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+import * as queryString from 'query-string';
 
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
@@ -23,6 +24,7 @@ import CountryEditorPage from '../../Admin/CountryEditorPage'
 import CountryListPage from '../../Admin/CountriesListPage'
 import AdsCreatePage from '../../AdsCreatePage'
 import AdsListPage from '../../AdsListPage'
+import TripDetailPage from '../../TripDetailPage'
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
@@ -46,11 +48,50 @@ const client = new ApolloClient({
   //  `/graphql` endpoint on the same host
   // Pass the configuration option { uri: YOUR_GRAPHQL_API_URL } to the `HttpLink` to connect
   // to a different host
-  link: new HttpLink({uri:'https://api.graph.cool/simple/v1/cjb646u2r08sq0159u7r9hvu6'}),
+  // link: new HttpLink({uri:'https://api.graph.cool/simple/v1/cjb646u2r08sq0159u7r9hvu6'}),
+  link: new HttpLink({uri:'http://localhost:4000'}),
   cache: new InMemoryCache()
 });
 
-export default function App() {
+export default function App(props) {
+  const { history } = props;
+  
+  let search = queryString.parse(window.location.search)
+  console.log('let search = queryString.parse(window.location.search)', search);
+  let course = false;
+
+  let emailToken = null;
+
+  if(search){
+    if(search.ads) {
+      if(search.edit){
+        course = `/ads/edit/${search.ads}`;
+      } else {
+        course = `/trip/${search.ads}`;
+      }
+    } else if(search.trip) {
+      course = `/trip/${search.trip}`;
+    } else if(search.editor) {
+      course = '/ads/editor'
+    }
+    
+    if(search.emailToken){
+      emailToken = search.emailToken;
+      // window.location.search = '';
+    }
+  }
+
+  
+
+  if(course) {
+    if(window.location.hash){
+      course += window.location.hash
+    }
+
+    history.push(course);
+  }
+  //
+
   return (
     <ApolloProvider client={client}>
     
@@ -61,7 +102,7 @@ export default function App() {
         >
           <meta name="description" content="www.triphub.cz - the place to find your travel budy :-)" />
         </Helmet>
-        <Header />
+        <Header emailToken={emailToken} />
         <PageWrapper>
         <Switch>
           <Route exact path="/" component={AdsListPage} />
@@ -70,6 +111,7 @@ export default function App() {
           <Route exact path="/admin/countries" component={CountryListPage} />
           <Route exact path="/ads/create" component={AdsCreatePage} />
           <Route exact path="/ads/edit/:id" component={AdsCreatePage} />
+          <Route exact path="/trip/:id" component={TripDetailPage} />
           <Route exact path="/ads/editor" render={routeProps => <AdsListPage {...routeProps} showEditButton={true}/>} />
           <Route path="" component={NotFoundPage} />
         </Switch>
