@@ -231,13 +231,13 @@ class AdsList extends React.Component{
             : 
             <div>
               <Column>
-                {col[0].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+                {col[0].col.map(ads => (<AdsListCard key={ads.id} ads={ads} showEditButton={this.props.showEditButton}/>))}
               </Column>
               <Column>
-                {col[1].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+                {col[1].col.map(ads => (<AdsListCard key={ads.id} ads={ads} showEditButton={this.props.showEditButton}/>))}
               </Column>
               <Column3>
-                {col[2].col.map(ads => (<AdsListCard ads={ads} showEditButton={this.props.showEditButton}/>))}
+                {col[2].col.map(ads => (<AdsListCard key={ads.id} ads={ads} showEditButton={this.props.showEditButton}/>))}
               </Column3>
             </div>
           }

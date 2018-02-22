@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 
 export default gql`
-    mutation verifyUserEmail($emailToken:String!) {
-        verifyUserEmail(emailToken:$emailToken) {
+    query me {
+        me {
             id,
             email,
-            verified,
             fullname,
+            verified,
             token,
             imageUrl,
             trips {

@@ -91,6 +91,7 @@ let Place = props => {
 const AdsEditorControls = (props) => {
 
     const {
+        edit,
         title,
         text,
         detailUrl,
@@ -102,6 +103,7 @@ const AdsEditorControls = (props) => {
         avatarImageUrl,
         avatarUrl,
         places,
+        user,
         ERROR,   
     } = props;
 
@@ -121,6 +123,10 @@ const AdsEditorControls = (props) => {
     } = props;
 
     const { self } = props;
+
+    const email = user && user.email ? user.email : detailUrl;
+    const emailBelongsToUser = user && user.email && edit;
+    const emailNotSameAsOwner = email !== localStorage.getItem('user.email');
 
     return (
         <div>
@@ -151,10 +157,11 @@ const AdsEditorControls = (props) => {
             
             <TextField
                 fullWidth={true}
-                floatingLabelText="Your email or Url of detailed information"
+                floatingLabelText="Your email"
                 hintText=""
                 errorText={ERROR.detailUrl ? ERROR.detailUrl: ''}
-                value={detailUrl}
+                disabled={emailBelongsToUser}
+                value={email}
                 onChange={onChangeDetailUrl}
             />
 
@@ -178,8 +185,8 @@ const AdsEditorControls = (props) => {
             <SelectField
                 floatingLabelText="Aproximately duration of this trip"
                 value={durationSelect}
-                onChange={onChangeTripDuration}
-            >
+                onChange={onChangeTripDuration} >
+                
                 <MenuItem value={0} primaryText="Not specified" />
                 <MenuItem value={1} primaryText="One Afternoon" />
                 <MenuItem value={2} primaryText="One day" />
@@ -193,6 +200,7 @@ const AdsEditorControls = (props) => {
                 <MenuItem value={10} primaryText="Year" />
             </SelectField>
             <br/>
+
             <TextField
                 floatingLabelText="Basic budget of this trip"
                 hintText="budget in czk"
@@ -200,32 +208,36 @@ const AdsEditorControls = (props) => {
                 onChange={onChangeBudget}
             />
 
-            <h3>3. Describe your self (optional)</h3>
-            <TextField
-                fullWidth={true}
-                floatingLabelText="Your name or nick"
-                hintText=""
-                value={avatarName}
-                onChange={onChangeAvatarName}
-            />
-            <br />
-            <TextField
-                fullWidth={true}
-                floatingLabelText="Link to image of your self"
-                hintText="Link to image of your self"
-                value={avatarImageUrl}
-                onChange={onChangeAvatarImageUrl}
-            /><br />
-            <TextField
-                fullWidth={true}
-                floatingLabelText="Link to your provifile of your self"
-                hintText="facebook, twitter, instagram"
-                value={avatarUrl}
-                onChange={onChangeAvatarUrl}
-            />
+            {emailNotSameAsOwner ? <div >
+                <h3>3. Describe your self (optional)</h3>
+                <TextField
+                    fullWidth={true}
+                    floatingLabelText="Your name or nick"
+                    hintText=""
+                    value={avatarName}
+                    onChange={onChangeAvatarName}
+                />
+                <br />
+                <TextField
+                    fullWidth={true}
+                    floatingLabelText="Link to image of your self"
+                    hintText="Link to image of your self"
+                    value={avatarImageUrl}
+                    onChange={onChangeAvatarImageUrl}
+                /><br />
+                <TextField
+                    fullWidth={true}
+                    multiLine={true}
+                    rows={5}
+                    floatingLabelText="Describe your self"
+                    hintText="interests, love, passions, music, ..."
+                    value={avatarUrl}
+                    onChange={onChangeAvatarUrl}
+                />
+            </div> : null }
 
 
-            <h3>4. Places you wish visit in your trip (optional)</h3>
+            <h3>{emailNotSameAsOwner ? '4' : '3'}. Places you wish visit in your trip (optional)</h3>
             <div>
                 {places.map((place, index)=>(
                     <Place key={index.toString()} place={place} onRemovePlace={onRemovePlace.bind(self, index)}/>

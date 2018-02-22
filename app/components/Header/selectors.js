@@ -19,7 +19,25 @@ const makeSelectTrips = () => createSelector(
     (globalState) => globalState.get('trips')
 );
 
+const makeSelectEmail = () => createSelector(
+    selectHeader,
+    (globalState) => globalState.get('email')
+);
+
+
+const makeSelectEmailTokenProcessed = () => createSelector(
+    selectHeader,
+    (globalState) => globalState.get('emailTokenProcessed')
+);
+
+const makeSelectToken = () => createSelector(
+    selectHeader,
+    (globalState) => globalState.get('token')
+);
 
 export {
     makeSelectTrips,
+    makeSelectEmail,
+    makeSelectEmailTokenProcessed,
+    makeSelectToken,
 };

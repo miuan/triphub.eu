@@ -19,19 +19,21 @@ import FlatButton from 'material-ui/FlatButton';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import AdsLeftRight from '../AdsCreatePage/AdsLeftRight.component'
-import TripDetailComments from './TripDetail.Comments'
-
+import ViewComment from './ViewComment.container'
+import EditComment from './EditComment.container'
 import styled from 'styled-components';
 
-import loadTripWithComments from '../graphql/loadTripWithComments'
+import loadAds from '../graphql/loadAd'
 
-class TripDetail extends React.Component{
+
+
+class TripDetailComments extends React.Component{
     state = {
   
     }
   
     componentWillMount() {
-      console.log('TripDetail', this.props, this.props.loadAds);
+      console.log('TripDetailComments', this.props, this.props.loadAds);
       //this.setState({durationSelect: selectIndex});
     };
   
@@ -40,22 +42,33 @@ class TripDetail extends React.Component{
     }
   
     render() {
-      const { loadAds : { Trip }, userId } = this.props;
+      let ERROR = {};
+      let title = '';
+      let text = '';
+      let email = localStorage.getItem('user.email');
+      let { userId } = this.props;
+
       // const loading = true;
       return (
         <div>
-          {Trip ? <AdsLeftRight ads={Trip} tripFirst={true}> 
-            <TripDetailComments 
-                  tripId={this.props.tripId} 
-                  trip={Trip} 
-                  userId={userId} />
-                  
-          </AdsLeftRight> : null}
+          {this.props.trip.comments.map((question) => (
+                <ViewComment 
+                      key={question.id} 
+                      email={email} 
+                      tripId={this.props.tripId} 
+                      question={question} 
+                      userId={userId} />)) 
+          }
+          <hr />
+          <EditComment 
+            question={true}
+            tripId={this.props.tripId}
+            email={email}  />
         </div>
       )
     }
   }
   
   export default composeApollo(
-    graphql(loadTripWithComments, {name: 'loadAds', skip: (ownProps) => !ownProps.tripId})
-  )(TripDetail);
+    
+  )(TripDetailComments);

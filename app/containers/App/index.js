@@ -13,7 +13,8 @@ import { Switch, Route } from 'react-router-dom';
 import * as queryString from 'query-string';
 
 import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
+import { HttpLink, createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
 
@@ -43,13 +44,24 @@ padding: 0 16px;
 flex-direction: column;
 `;
 
+const httpLink = createHttpLink({
+  uri:'http://localhost:4000'
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('user.token');
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+});
+
 const client = new ApolloClient({
-  // By default, this client will send queries to the
-  //  `/graphql` endpoint on the same host
-  // Pass the configuration option { uri: YOUR_GRAPHQL_API_URL } to the `HttpLink` to connect
-  // to a different host
-  // link: new HttpLink({uri:'https://api.graph.cool/simple/v1/cjb646u2r08sq0159u7r9hvu6'}),
-  link: new HttpLink({uri:'http://localhost:4000'}),
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 });
 
@@ -97,10 +109,10 @@ export default function App(props) {
     
       <AppWrapper>
         <Helmet
-          titleTemplate="%s - www.triphub.cz - the place to find your travel budy :-)"
-          defaultTitle="www.triphub.cz - the place to find your travel budy :-)"
+          titleTemplate="%s - www.triphub.cz - the place to find your travel buddy :-)"
+          defaultTitle="www.triphub.cz - the place to find your travel buddy :-)"
         >
-          <meta name="description" content="www.triphub.cz - the place to find your travel budy :-)" />
+          <meta name="description" content="www.triphub.cz - the place to find your travel buddy :-)" />
         </Helmet>
         <Header emailToken={emailToken} />
         <PageWrapper>

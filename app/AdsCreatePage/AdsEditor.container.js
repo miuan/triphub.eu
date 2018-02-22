@@ -26,6 +26,8 @@ import { Route } from 'react-router-dom'
 import AdsEditorControls, { genereateOnChangers } from './AdsEditorControls.component'
 import AdsLeftRight from './AdsLeftRight.component'
 
+import { tokenRecaived } from '../components/Header/actions';
+
 import { 
   placesLoaded, 
   placesRequest, 
@@ -90,26 +92,32 @@ class AdsEditor extends React.Component{
   
   // const { onAddPlace, onRemovePlace, places } = props;
   
-  componentWillMount() {
+  componentDidMount() {
     //console.log('AdsEditor', this.props, this.props.places);
     console.log('AdsEditor', localStorage);
+
+    const email = localStorage.getItem('user.email') || '';
+    if(email){
+      this.setState({detailUrl: email});
+    }
     //this.setState({durationSelect: selectIndex});
   };
 
-  adsFromAds(Ads){
+  adsFromAds(Trip){
     const ads = {
-      id: Ads.id,
-      duration: Ads.durationSelect || 0,
-      imageUrl: Ads.imageUrl || '',
-      title: Ads.title || '',
-      text: Ads.text || '',
-      detailUrl: Ads.detailUrl || '',
-      places: Ads.places,
-      date: new Date(Ads.date),
-      budget: Number(Ads.budget),
-      avatarUrl: Ads.avatarUrl,
-      avatarImageUrl: Ads.avatarImageUrl,
-      avatarName: Ads.avatarName,
+      id: Trip.id,
+      duration: Trip.durationSelect || 0,
+      imageUrl: Trip.imageUrl || '',
+      title: Trip.title || '',
+      text: Trip.text || '',
+      detailUrl: Trip.detailUrl || '',
+      places: Trip.places,
+      date: new Date(Trip.date),
+      budget: Number(Trip.budget),
+      avatarUrl: Trip.avatarUrl,
+      avatarImageUrl: Trip.avatarImageUrl,
+      avatarName: Trip.avatarName,
+      user: Trip.user || {},
     }
 
     return ads;
@@ -121,27 +129,27 @@ class AdsEditor extends React.Component{
       return;
     }
 
-    const { loadAds : { Ads } } = nextProps;
+    const { loadAds : { Trip } } = nextProps;
     const { onAddPlace } = this.props;
-    //console.log('componentWillReceiveProps', Ads);
+    //console.log('componentWillReceiveProps', Trip);
     
-    if(Ads && Ads.id) {
-      const ads = this.adsFromAds(Ads);
+    if(Trip && Trip.id) {
+      const ads = this.adsFromAds(Trip);
       
       ads.edit = true;
-      ads.durationSelect = Ads.duration;
+      ads.durationSelect = Trip.duration;
       ads.places = [];
 
-      Ads.places.forEach((place)=>{
+      Trip.places.forEach((place)=>{
         // no store the place to service
         ads.places.push(place)
       })
 
       this.setState(ads);
 
-      if(Ads.places){
-        console.log('if(Ads.places)', Ads.places);
-        Ads.places.forEach((place)=>{
+      if(Trip.places){
+        console.log('if(Trip.places)', Trip.places);
+        Trip.places.forEach((place)=>{
           // no store the place to service
           // onAddPlace(place, false);
         })
@@ -170,7 +178,7 @@ class AdsEditor extends React.Component{
     let places = this.state.places;
     const removed = places.splice(indexRemove, 1);
     this.setState({ places });
-    console.log('if(Ads.places)', places, indexRemove);
+    console.log('if(Trip.places)', places, indexRemove);
     if(this.props.adsId){
       const { deletePlace } = this.props;
 
@@ -179,7 +187,13 @@ class AdsEditor extends React.Component{
   }
 
   onCreateAds = () => {
-    const { createAds, updateAds, places, onCreateOrUpdateTrip } = this.props;
+    const { 
+      createAds, 
+      updateAds, 
+      places, 
+      updateTripsInLocalStorage,
+      afterCreateNewTrip,
+    } = this.props;
     
     let error = {};
     let hasError = false;
@@ -222,7 +236,7 @@ class AdsEditor extends React.Component{
       // ads.date = `${ads.date.getFullYear()}-${ads.date.getUTCMonth()}-${ads.date.getDate()}`;
       updateAds({variables:ads}).then((updated)=>{
         
-        onCreateOrUpdateTrip(updated.data.updateAds);
+        updateTripsInLocalStorage(updated.data.updateTrip);
 
         this.setState({
           open: true, 
@@ -242,15 +256,19 @@ class AdsEditor extends React.Component{
       ads.places = mappedPlaces;
       //ads.date = `${ads.date.getFullYear()}-${ads.date.getMonth()}-${ads.date.getDate()}`;
       createAds({variables:ads}).then((created)=>{
-        onCreateOrUpdateTrip(created.data.createAds);
+        this.setState({edit: true});
 
+        afterCreateNewTrip(created.data.createTrip);
+        updateTripsInLocalStorage(created.data.createTrip);
+        
         this.setState({
           open: true, 
           message: 'Your trip is created! :-)',
           action:'home'
         });
       });
-      this.setState({edit: true});
+
+      
     }
     
   }
@@ -272,7 +290,7 @@ class AdsEditor extends React.Component{
                     onRemovePlace={this.onRemovePlace} />   
         </AdsLeftRight>
         
-      <Route render={({ history}) => (
+      <Route render={({ history }) => (
         <Snackbar
           open={this.state.open}
           message={this.state.message}
@@ -295,12 +313,17 @@ export function mapDispatchToProps(dispatch , props) {
       console.log('onChangePlace', props);
       // refetch({ name : city_name})
       dispatch(placesRequest(city_name))
-    },onCreateNewPlace : (open) => {
+    },
+    
+    onCreateNewPlace : (open) => {
       console.log('onCreateNewPlace', open)
-      dispatch(openNewPlaceModal(true))
-    }, onCreateOrUpdateTrip: (trip) => {
       
-      let trips = JSON.parse(localStorage.getItem('created-trips')) || [];
+      dispatch(openNewPlaceModal(true))
+    }, 
+    
+    updateTripsInLocalStorage: (trip) => {
+      
+      let trips = JSON.parse(localStorage.getItem('user.trips')) || [];
       
       console.log('saveLocalStorage', trips);
   
@@ -321,10 +344,16 @@ export function mapDispatchToProps(dispatch , props) {
       trips.splice(0, 0, trip);
   
       let textTrips = JSON.stringify(trips);
-      localStorage.setItem('created-trips', textTrips)
+      localStorage.setItem('user.trips', textTrips)
 
       dispatch(tripsStorageUpdate(trips));
     }, 
+
+    afterCreateNewTrip(trip){
+      if(trip && trip.user && trip.user.token){
+        dispatch(tokenRecaived(trip.user.token));
+      }
+    },
   };
 }
 
@@ -346,8 +375,8 @@ export default //AdsEditorContainer;
 
  composeApollo(
   graphql(gql`
-    mutation createAds($places: [AdsplacesPlace!], $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, , $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String) {
-      createAds(places: $places, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
+    mutation createAds($places: [PlaceInput!], $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, , $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String) {
+      createTrip(places: $places, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
         id,
         title,
         text,
@@ -357,13 +386,17 @@ export default //AdsEditorContainer;
           country
         },
         date,
-        budget
+        budget,
+        user{
+          token,
+          email
+        }
       }
     }
 `, {name: 'createAds'}),
   graphql(gql`
     mutation updateAds($id: ID!, $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String) {
-      updateAds(id:$id, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
+      updateTrip(id:$id, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
         id,
         title,
         text,
@@ -379,7 +412,11 @@ export default //AdsEditorContainer;
         budget,
         avatarName,
         avatarUrl,
-        avatarImageUrl,
+        avatarImageUrl
+        user{
+          token,
+          email
+        }
       }
     }
   `, {name: 'updateAds'}),

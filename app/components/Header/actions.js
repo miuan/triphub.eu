@@ -17,6 +17,9 @@
 
 import {
     TRIPS_RECAIVED,
+    EMAIL_RECAIVED,
+    EMAIL_TOKEN_PROCESSED,
+    TOKEN_RECAIVED,
 } from './constants';
   
 /**
@@ -27,8 +30,29 @@ import {
  * @return {object}    An action object with a type of CHANGE_USERNAME
  */
 export function tripsRecaived(trips) {
-return {
-    type: TRIPS_RECAIVED,
-    trips,
-};
+    return {
+        type: TRIPS_RECAIVED,
+        trips,
+    };
+}
+
+export function emailRecaived(email) {
+    return {
+        type: EMAIL_RECAIVED,
+        email,
+    };
+}
+
+export function emailTokenProcessed(emailToken) {
+    return {
+        type: EMAIL_TOKEN_PROCESSED,
+        emailToken,
+    };
+}
+
+export function tokenRecaived(token) {
+    return {
+        type: TOKEN_RECAIVED,
+        token,
+    };
 }

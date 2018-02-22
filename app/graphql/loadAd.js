@@ -18,7 +18,11 @@ export default gql`
             avatarUrl,
             avatarImageUrl,
             date,
-            budget
+            budget,
+            user{
+                email,
+                verified
+            }
         }
     }
 `

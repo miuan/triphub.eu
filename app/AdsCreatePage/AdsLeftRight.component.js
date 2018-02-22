@@ -3,18 +3,24 @@ import styled from 'styled-components';
 
 import AdsListCart from './../AdsListPage/AdsListCard.container'
 
-const styleContainer = {    
-}
+const ItemLeft = styled.div`
 
-const styleItemLeft = {
-    width: '80%',
-    padding: 20,
-}
+    width: 750px;
+    padding: 20px;
+    padding-right:120px;
+    overflow:hidden;
+    @media(max-width:600px){
+        float:none;
+        width: 100%;
+        padding-right:20px;
+    }
+`;
 
 const ItemRight = styled.div`
     width: 15%;
     float: right;
     padding: 20;
+    z-index: 0;
     @media(max-width:600px){
         float:none;
         width: 100%;
@@ -30,21 +36,37 @@ const Fixed = styled.div`
 `;
 
 const AdsLeftRight = (props) => {
-
-
-    return (
-        <div style={styleContainer}>        
-            <div style={styleItemLeft}>
-                {props.children}
+    const { tripFirst } = props;
+    // on computer view looks the same
+    // in mobile is trip on first and then
+    // other data as comments, etc..  
+    if( tripFirst ) {
+        return (
+            <div >
+                <ItemRight>
+                    <Fixed>
+                        <AdsListCart ads={props.ads} onSave={props.onSaveAds} onSaveName="Save Or Update"/>
+                    </Fixed>
+                    </ItemRight>
+                    <ItemLeft >
+                        {props.children}
+                    </ItemLeft>
             </div>
-
-            <ItemRight>
+        );
+    } else {
+        return (
+            <div>
+                <ItemLeft >
+                    {props.children}
+                </ItemLeft>
+                <ItemRight>
                 <Fixed>
                     <AdsListCart ads={props.ads} onSave={props.onSaveAds} onSaveName="Save Or Update"/>
                 </Fixed>
-            </ItemRight>
-        </div>
-    )
+                </ItemRight>
+            </div>
+        );
+    }
 };
 
 export default AdsLeftRight;

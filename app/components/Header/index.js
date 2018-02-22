@@ -23,9 +23,23 @@ import injectSaga from 'utils/injectSaga';
 
 import reducer from './reducer';
 import saga from './saga';
-import { makeSelectTrips } from './selectors';
-import { tripsRecaived } from './actions';
+
+import { 
+  makeSelectTrips, 
+  makeSelectEmail, 
+  makeSelectEmailTokenProcessed,
+  makeSelectToken,
+} from './selectors';
+
+import { 
+  tripsRecaived, 
+  emailRecaived,
+  emailTokenProcessed,
+  tokenRecaived,
+} from './actions';
+
 import verifyUserEmailGL from '../../graphql/verifyUserEmail';
+import meGL from '../../graphql/me';
 
 const HeaderWrapper = styled.div`
   color: white;
@@ -138,16 +152,64 @@ const A = styled(Link)`
 
 
 
-const Header = (props) => { // eslint-disable-line react/prefer-stateless-function
+
+const Header = (props, dispatch) => { // eslint-disable-line react/prefer-stateless-function
+
+  const setupUser = (user, data) => {
+    console.log(user, data);
+    
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user.id', user.id);
+    localStorage.setItem('user.email', user.email);
+    localStorage.setItem('user.token', user.token);
+    localStorage.setItem('user.imageUrl', user.imageUrl);
+    localStorage.setItem('user.trips', JSON.stringify(user.trips));
+    localStorage.setItem('user.favorites',JSON.stringify(user.favorites));
+    localStorage.setItem('user.commented', JSON.stringify(user.commented));
+    
+    if(user.trips && user.trips.length > 0){
+      props.recaivedNewTrips(user.trips);
+    } 
+    
+    if(user.email) {
+      props.recaivedEmail(user.email);
+    }
+
+    if(user.token){
+      props.recaivedToken(user.token);
+    }
+    
+  }
 
   const trips = props.trips || storedTrips;
   console.log('))))))Header', props.trips);
+  // not repeat the action any time
+  // when the props are changed
+  if(!props.checkEmailTokenProcessed){
+    
+    if(props.emailToken){
+      // take action for stop repeat
+      props.emailTokenProcessed(props.emailToken);
+      
+      props.verifyUserEmail({emailToken: props.emailToken}).then((data) => {
+        let user = data.data && data.data.verifyUserEmail ? data.data.verifyUserEmail : null
+        
+        setupUser(user, data);
+      })
+    } else if(props.token){
+      // take action for stop repeat
+      props.emailTokenProcessed(props.token);
 
-  if(props.emailToken){
-    props.verifyUserEmail({}).then((data)=>{
-      console.log(data);
-    })
+      localStorage.setItem('user.token', props.token);
+
+      props.me.refetch({}).then((data) => {
+        let user = data.data && data.data.me ? data.data.me : null
+        
+        setupUser(user, data);
+      });
+    }
   }
+  
 
   return (
     <HeaderWrapper>
@@ -168,7 +230,7 @@ const Header = (props) => { // eslint-disable-line react/prefer-stateless-functi
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
           >
-            <MenuItem primaryText="My trips:" />
+            <MenuItem primaryText={`${props.email}`} />
             {trips.map(trip => <Link to={`/ads/edit/${trip.id}`} rightIcon={
                                   <FontIcon className="material-icons" style={{color: '#559'}}>settings</FontIcon>
                                 }>
@@ -177,7 +239,7 @@ const Header = (props) => { // eslint-disable-line react/prefer-stateless-functi
           </IconMenu>: null}
         </Right>
         <Center>
-          <H2>„The place to find your travel budy”</H2>
+          <H2>„The place to find your travel buddy”</H2>
         </Center>
       </PageWrapper>
     </HeaderWrapper>
@@ -187,16 +249,43 @@ const Header = (props) => { // eslint-disable-line react/prefer-stateless-functi
 export function mapDispatchToProps(dispatch) {
   // I think is big hack have here
   // the dispatch but it works
-  let storedTrips = JSON.parse(localStorage.getItem('created-trips')) || [];
+  let storedTrips = JSON.parse(localStorage.getItem('user.trips')) || [];
   dispatch(tripsRecaived(storedTrips));
   
+  let email = localStorage.getItem('user.email');
+  if(email){
+    dispatch(emailRecaived(email));
+  }
+
+  let token = localStorage.getItem('token');
+  if(token){
+    dispatch(tokenRecaived(token))
+  }
+
   return {
-  
+    recaivedNewTrips(trips){
+      dispatch(tripsRecaived(trips));
+    },
+
+    recaivedEmail(email){
+      dispatch(emailRecaived(email))
+    },
+
+    emailTokenProcessed(emailToken){
+      dispatch(emailTokenProcessed(emailToken))
+    },
+
+    recaivedToken(token){
+      dispatch(tokenRecaived(token))
+    },
   };
 }
 
 const mapStateToProps = createStructuredSelector({
-  trips: makeSelectTrips()
+  trips: makeSelectTrips(),
+  email: makeSelectEmail(),
+  checkEmailTokenProcessed: makeSelectEmailTokenProcessed(),
+  token: makeSelectToken(),
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
@@ -214,5 +303,8 @@ const HeaderContainer = compose(
 export default composeApollo(
   graphql(verifyUserEmailGL, {name: 'verifyUserEmail', skip1: (ownProps) => {
     return !ownProps.emailToken;
+  }}),
+  graphql(meGL, {name: 'me', skip1: (ownProps) => {
+    return !ownProps.token;
   }})
 )(HeaderContainer);
