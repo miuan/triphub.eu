@@ -96,10 +96,21 @@ class AdsEditor extends React.Component{
     //console.log('AdsEditor', this.props, this.props.places);
     console.log('AdsEditor', localStorage);
 
+    const date = new Date();
+    date.setMonth(date.getMonth() + 2);
+
+    let state = {
+      date: date
+    }
+
     const email = localStorage.getItem('user.email') || '';
     if(email){
-      this.setState({detailUrl: email});
+      state.detailUrl = email;
     }
+
+    this.setState(state);
+
+    console.log(state);
     //this.setState({durationSelect: selectIndex});
   };
 
@@ -156,7 +167,9 @@ class AdsEditor extends React.Component{
       }
       
     } else {
-      this.setState({edit: false});
+      this.setState({
+        edit: false,
+      });
     }
     
   }

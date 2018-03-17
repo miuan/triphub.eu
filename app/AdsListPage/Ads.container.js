@@ -37,6 +37,7 @@ class Ads extends React.Component{
     searchDuration: 0,
     searchMonth: 0,
     searchBudget: 0,
+    transportType: 0,
   }
 
   timer = null;
@@ -73,6 +74,11 @@ class Ads extends React.Component{
     this.setState({searchBudget: value});
   };
 
+  onChangeTransportType = (ops, data, value) => {
+    console.log('onChangeTransportType', value, data)
+    this.setState({transportType: value});
+  };
+
   startSearch(){
     console.log('startSearch')
     this.setState({searchTextDO: this.state.searchText});
@@ -106,23 +112,41 @@ class Ads extends React.Component{
             <MenuItem value={12} primaryText="December" />
           </SelectField>
           <SelectField
-            floatingLabelText="How much time you have"
-            value={this.state.searchDuration}
-            onChange={this.onChangeSearchDuration}
-            floatingLabelStyle={styles.floatingLabelStyle}
-            underlineFocusStyle={styles.underlineStyle}>
-              <MenuItem value={0} primaryText="Doesn't matter" />
-              <MenuItem value={1} primaryText="One Afternoon" />
-              <MenuItem value={2} primaryText="One day" />
-              <MenuItem value={3} primaryText="Weekend" />
-              <MenuItem value={4} primaryText="Week" />
-              <MenuItem value={5} primaryText="Two weeks" />
-              <MenuItem value={6} primaryText="Month" />
-              <MenuItem value={7} primaryText="Two Months" />
-              <MenuItem value={8} primaryText="Quartter Year" />
-              <MenuItem value={9} primaryText="Half Year" />
-              <MenuItem value={10} primaryText="Year" />
-          </SelectField>
+                floatingLabelText="Transport type 1"
+                value={this.state.transportType}
+                onChange={this.onChangeTransportType} 
+                floatingLabelStyle={styles.floatingLabelStyle}
+                underlineFocusStyle={styles.underlineStyle}>
+                
+                <MenuItem value={0} primaryText="Doesn't matter" />
+                <MenuItem value={1} primaryText="Bike" />
+                <MenuItem value={2} primaryText="Boat" />
+                <MenuItem value={3} primaryText="Bus" />
+                <MenuItem value={4} primaryText="Car" />
+                <MenuItem value={5} primaryText="Flight" />
+                <MenuItem value={6} primaryText="Hitch-hike" />
+                <MenuItem value={7} primaryText="Train" />
+                <MenuItem value={8} primaryText="Walk" />
+            
+            </SelectField>
+          <SelectField
+                floatingLabelText="How much time you have"
+                value={this.state.searchDuration}
+                onChange={this.onChangeSearchDuration}
+                floatingLabelStyle={styles.floatingLabelStyle}
+                underlineFocusStyle={styles.underlineStyle}>
+                
+                <MenuItem value={0} primaryText="Doesn't matter" />
+                <MenuItem value={1} primaryText="One afternoon" />
+                <MenuItem value={2} primaryText="One day" />
+                <MenuItem value={3} primaryText="Weekend" />
+                <MenuItem value={4} primaryText="Week" />
+                <MenuItem value={5} primaryText="Two weeks" />
+                <MenuItem value={6} primaryText="Three weeks" />
+                <MenuItem value={7} primaryText="Month" />
+                <MenuItem value={8} primaryText="More than month" />
+            </SelectField>
+            
           <SelectField
             floatingLabelText="My maximum budged"
             value={this.state.searchBudget}
@@ -143,7 +167,7 @@ class Ads extends React.Component{
           <TextField
             style={textSearchStyle}
             fullWidth={true}
-            hintText="Paris, Barcelona, Berlin, ..."
+            hintText="Paris, Barcelona, Prague, ..."
             floatingLabelText={'search trip by places you want to visit'}
             value={this.state.searchText}
             onChange={this.onChangeSeachText}
@@ -156,7 +180,8 @@ class Ads extends React.Component{
             searchText={this.state.searchTextDO}
             searchMonth={this.state.searchMonth}  
             searchDuration={this.state.searchDuration}
-            searchBudget={this.state.searchBudget} />
+            searchBudget={this.state.searchBudget}
+            transportType={this.state.transportType} />
 
         </div>
     )

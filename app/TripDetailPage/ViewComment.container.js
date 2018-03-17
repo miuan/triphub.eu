@@ -233,7 +233,7 @@ class ViewComment extends React.Component{
                 <button style={FlatButtonStyle} onClick={this.onButtonRemove.bind(this)}>
                     Remove
                 </button>
-              </span> : `${user.id} == ${userId}`}
+              </span> : null}
               
             </ButtonsContainer>
             

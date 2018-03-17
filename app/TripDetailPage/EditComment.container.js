@@ -134,11 +134,19 @@ class EditComment extends React.Component{
     onChangeEmail(ops, data) {
       console.log('onChangeEmail', ops, data)
       this.setState({email:data, dirty: true})
+
+      if(this.props.onChangeTextAndEmail){
+        this.props.onChangeTextAndEmail(this.state.text, this.state.email);
+      }
     };
     
     onChangeText(ops, data) {
       console.log('onChangeText', ops, data)
       this.setState({text: data, dirty: true});
+
+      if(this.props.onChangeTextAndEmail){
+        this.props.onChangeTextAndEmail(this.state.text, this.state.email);
+      }
     }
 
     onEditingEmail(ops, data) {
@@ -162,10 +170,18 @@ class EditComment extends React.Component{
   
     render() {
 
-      const { commentId , question } = this.props;
+      const { 
+        commentId, 
+        question, 
+        infoText,
+        hideButtons,
+      } = this.props;
       
       const commentName = question ? 'Question' : 'Answer'
       const commentNameLower = commentName.toLowerCase();
+
+      const textForUser = infoText ? infoText : `Type your ${commentNameLower}`;
+
       let email = '';
       let text = '';
 
@@ -192,8 +208,8 @@ class EditComment extends React.Component{
         <div>
             <TextField
                 fullWidth={true}
-                hintText={`Type your ${commentNameLower}`}
-                floatingLabelText={`Type your ${commentNameLower}`}
+                hintText={textForUser}
+                floatingLabelText={textForUser}
                 errorText={dirtyAndMissingText ? "This field is required" : ''}
                 multiLine={true}
                 rows={question ? 1 : 3}
@@ -203,7 +219,7 @@ class EditComment extends React.Component{
 
             {emailElement}
 
-            <ButtonContainer>
+            {!hideButtons ? <ButtonContainer>
               {commentId ? 
                 <Button onClick={this.onButtonUpdate.bind(this)}>
                   Update {commentName}
@@ -212,7 +228,7 @@ class EditComment extends React.Component{
                     Add {commentName}
                 </Button>
               }
-            </ButtonContainer>
+            </ButtonContainer> : null }
             <Clean />
         </div>
       )

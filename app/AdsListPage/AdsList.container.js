@@ -70,21 +70,54 @@ class AdsList extends React.Component{
     console.log('componentWillReceiveProps', nextProps, this.props)
     if (this.props.searchText != nextProps.searchText) {
       console.log('componentWillReceiveProps::searchText changed', nextProps.searchText)
-      this.updateResultBySearchText(nextProps.searchText, this.props.searchMonth, this.props.searchDurtaion, this.props.searchBudget);
+      this.updateResultBySearchText(
+        nextProps.searchText, 
+        this.props.searchMonth, 
+        this.props.searchDurtaion, 
+        this.props.searchBudget, 
+        this.props.transportType,
+      );
+
     } else if (this.props.searchMonth != nextProps.searchMonth) {
       console.log('componentWillReceiveProps::searchMonth changed', nextProps.searchMonth)
-      this.updateResultBySearchText(this.props.searchText, nextProps.searchMonth, this.props.searchDuration, this.props.searchBudget);
+      this.updateResultBySearchText(
+        this.props.searchText, 
+        nextProps.searchMonth, 
+        this.props.searchDuration, 
+        this.props.searchBudget,
+        this.props.transportType,
+      );
     } else if (this.props.searchDuration != nextProps.searchDuration) {
       console.log('componentWillReceiveProps::searchDurtaion changed', nextProps.searchDuration)
-      this.updateResultBySearchText(this.props.searchText, this.props.searchMonth, nextProps.searchDuration, this.props.searchBudget);
+      this.updateResultBySearchText(
+        this.props.searchText, 
+        this.props.searchMonth, 
+        nextProps.searchDuration, 
+        this.props.searchBudget,
+        this.props.transportType,
+      );
     } else if (this.props.searchBudget != nextProps.searchBudget) {
       console.log('componentWillReceiveProps::searchBudget changed', nextProps.searchBudget)
-      this.updateResultBySearchText(this.props.searchText, this.props.searchMonth, this.props.searchDuration, nextProps.searchBudget);
+      this.updateResultBySearchText(
+        this.props.searchText, 
+        this.props.searchMonth, 
+        this.props.searchDuration, 
+        nextProps.searchBudget,
+        this.props.transportType,
+      );
+    } else if (this.props.transportType != nextProps.transportType) {
+      console.log('componentWillReceiveProps::transportType changed', nextProps.transportType)
+      this.updateResultBySearchText(
+        this.props.searchText, 
+        this.props.searchMonth, 
+        this.props.searchDuration,
+        this.props.searchBudget, 
+        nextProps.transportType);
     }
 
   }
 
-  updateResultBySearchText(searchText, searchMonth, searchDurtaion, searchBudget){
+  updateResultBySearchText(searchText, searchMonth, searchDurtaion, searchBudget, transportType){
     const { data: { allTrips, loading, refetch }} = this.props;
 
     let AND = []
@@ -136,12 +169,15 @@ class AdsList extends React.Component{
       const date_filter_2018 = createFilterForMonthAndYear(searchMonth, 2018)
       const date_filter_2019 = createFilterForMonthAndYear(searchMonth, 2019)
       const date_filter_2020 = createFilterForMonthAndYear(searchMonth, 2020)
-      
+      const date_filter_anytime = {
+        date_lte: new Date(`2000-01-01`)
+      }
 
       let OR = [
         date_filter_2018,
         date_filter_2019,
         date_filter_2020,
+        date_filter_anytime,
       ]
 
       AND.push({OR})
@@ -169,6 +205,18 @@ class AdsList extends React.Component{
       }
 
       AND.push(budget_filter)
+    }
+
+    if(transportType != 0){
+      
+      const transportType_filter = {
+        AND: [
+          { transportType_not: 0 },
+          { transportType: searchBudget }
+        ]
+      }
+
+      AND.push(transportType_filter)
     }
 
     // wtf? brain storm :)

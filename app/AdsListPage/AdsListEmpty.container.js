@@ -74,8 +74,8 @@ class AdsListEmpty extends React.Component{
   render() {
 
     return (
-        <EmptyWrapper> 
-          <H2>Ups... no trip match your criteria, create one and lets other join you :-)</H2>
+        <EmptyWrapper>
+          <H2>Ups... no trip match your criteria, create one and lets other join you :-)</H2>    
           <ButtonCreate to="/ads/create">
             Create Trip
           </ButtonCreate>

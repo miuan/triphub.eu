@@ -45,7 +45,12 @@ const AdsLeftRight = (props) => {
             <div >
                 <ItemRight>
                     <Fixed>
-                        <AdsListCart ads={props.ads} onSave={props.onSaveAds} onSaveName="Save Or Update"/>
+                        <AdsListCart 
+                                ads={props.ads} 
+                                onSave={props.onSaveAds} 
+                                onSaveName="Save Or Update"
+                                hideDetail={props.hideDetail}
+                                onTakeMeToo={props.onTakeMeToo} />
                     </Fixed>
                     </ItemRight>
                     <ItemLeft >
@@ -61,7 +66,12 @@ const AdsLeftRight = (props) => {
                 </ItemLeft>
                 <ItemRight>
                 <Fixed>
-                    <AdsListCart ads={props.ads} onSave={props.onSaveAds} onSaveName="Save Or Update"/>
+                    <AdsListCart 
+                            ads={props.ads} 
+                            onSave={props.onSaveAds} 
+                            onSaveName="Save Or Update" 
+                            hideDetail={props.hideDetail}
+                            onTakeMeToo={props.onTakeMeToo} />
                 </Fixed>
                 </ItemRight>
             </div>

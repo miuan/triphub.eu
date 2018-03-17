@@ -16,6 +16,7 @@ import DatePicker from 'material-ui/DatePicker';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import GooglePlaceAutocomplete from './components/GoogleAutocomplete';
 
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 // some of test data
 let testForResolveCountryName = {address_components:[
   {long_name: "Augsburg", short_name: "A", types: ["locality", "political"]},
