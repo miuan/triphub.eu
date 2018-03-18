@@ -75,12 +75,8 @@ export default function App(props) {
   let emailToken = null;
 
   if(search){
-    if(search.ads) {
-      if(search.edit){
-        course = `/ads/edit/${search.ads}`;
-      } else {
-        course = `/trip/${search.ads}`;
-      }
+    if(search.edittrip) {
+      course = `/ads/edit/${search.edittrip}`;
     } else if(search.trip) {
       course = `/trip/${search.trip}`;
     } else if(search.editor) {

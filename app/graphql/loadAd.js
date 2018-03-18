@@ -7,9 +7,9 @@ export default gql`
             title,
             text,
             places {
-            id,
-            name,
-            country
+                id,
+                name,
+                country
             },
             duration,
             imageUrl,
@@ -19,6 +19,7 @@ export default gql`
             avatarImageUrl,
             date,
             budget,
+            transportType,
             user{
                 email,
                 verified

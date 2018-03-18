@@ -116,11 +116,19 @@ class TripDetail extends React.Component{
       return (
         <div>
           {Trip ? 
+          
           <AdsLeftRight 
                 ads={Trip} 
                 tripFirst={true} 
                 hideDetail={true}
                 onTakeMeToo={!this.state.joinToTripSended ? this.onTakeMeToo.bind(this) : null} > 
+            <Helmet>
+              <meta property="og:url" content={`http://triphub.cz?tripdetail=${Trip.id}`}/>
+              <meta property="og:type" content="article"/>
+              <meta property="og:title" content={Trip.title} />
+              <meta property="og:description" content={Trip.text}/>
+              <meta property="og:image" content={Trip.imageUrl}/>
+            </Helmet>
             <TripDetailComments 
                   tripId={this.props.tripId} 
                   trip={Trip} 

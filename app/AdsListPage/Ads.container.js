@@ -112,7 +112,7 @@ class Ads extends React.Component{
             <MenuItem value={12} primaryText="December" />
           </SelectField>
           <SelectField
-                floatingLabelText="Transport type 1"
+                floatingLabelText="Transport type"
                 value={this.state.transportType}
                 onChange={this.onChangeTransportType} 
                 floatingLabelStyle={styles.floatingLabelStyle}

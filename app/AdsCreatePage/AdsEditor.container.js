@@ -83,7 +83,8 @@ class AdsEditor extends React.Component{
     // snack bar
     open: false,
     message: '',
-    action: ''
+    action: '',
+    transportType: 0,
   }
 
   onChangers = genereateOnChangers(this);
@@ -129,6 +130,7 @@ class AdsEditor extends React.Component{
       avatarImageUrl: Trip.avatarImageUrl,
       avatarName: Trip.avatarName,
       user: Trip.user || {},
+      transportType: Trip.transportType
     }
 
     return ads;
@@ -388,8 +390,8 @@ export default //AdsEditorContainer;
 
  composeApollo(
   graphql(gql`
-    mutation createAds($places: [PlaceInput!], $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, , $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String) {
-      createTrip(places: $places, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
+    mutation createAds($places: [PlaceInput!], $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, , $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String, $transportType: Int) {
+      createTrip(places: $places, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName, transportType: $transportType) {
         id,
         title,
         text,
@@ -400,6 +402,7 @@ export default //AdsEditorContainer;
         },
         date,
         budget,
+        transportType
         user{
           token,
           email
@@ -408,8 +411,8 @@ export default //AdsEditorContainer;
     }
 `, {name: 'createAds'}),
   graphql(gql`
-    mutation updateAds($id: ID!, $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String) {
-      updateTrip(id:$id, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName) {
+    mutation updateAds($id: ID!, $title:String, $text: String!, $imageUrl: String, $detailUrl: String, $duration: Int, $budget: Int, $date: DateTime, $avatarUrl: String, $avatarImageUrl: String, $avatarName: String, $transportType: Int) {
+      updateTrip(id:$id, title:$title, text:$text, imageUrl:$imageUrl, detailUrl: $detailUrl, duration: $duration, budget: $budget, date: $date, avatarUrl: $avatarUrl, avatarImageUrl: $avatarImageUrl, avatarName: $avatarName, transportType: $transportType) {
         id,
         title,
         text,
@@ -425,7 +428,8 @@ export default //AdsEditorContainer;
         budget,
         avatarName,
         avatarUrl,
-        avatarImageUrl
+        avatarImageUrl,
+        transportType,
         user{
           token,
           email

@@ -212,7 +212,7 @@ class AdsList extends React.Component{
       const transportType_filter = {
         AND: [
           { transportType_not: 0 },
-          { transportType: searchBudget }
+          { transportType: transportType }
         ]
       }
 
@@ -312,7 +312,8 @@ export default composeApollo(
             },
             avatarUrl,
             avatarImageUrl,
-            avatarName
+            avatarName,
+            transportType,
       }
     }
 `,)

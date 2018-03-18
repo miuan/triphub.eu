@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { compose as composeApollo, graphql } from 'react-apollo'
+import { Helmet } from 'react-helmet';
 
 import injectReducer from 'utils/injectReducer';
 
